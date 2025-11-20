@@ -1,0 +1,625 @@
+openapi: 3.0.3
+info:
+  description: "API para gestionar usuarios, salas, eventos, reservas y etiquetas\
+    \ del campus MAIA."
+  title: Maia Campus Event API
+  version: 1.0.0
+servers:
+- url: http://localhost:8080
+paths:
+  /users:
+    get:
+      operationId: usersGET
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/User"
+                type: array
+          description: List of users
+      summary: List all users
+      x-eov-operation-handler: controllers/DefaultController
+    post:
+      operationId: usersPOST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserInput"
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+          description: User created
+      summary: Create a new user
+      x-eov-operation-handler: controllers/DefaultController
+  /users/{id}:
+    delete:
+      operationId: usersIdDELETE
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          description: User deleted
+      summary: Delete a user
+      x-eov-operation-handler: controllers/DefaultController
+    get:
+      operationId: usersIdGET
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+          description: User found
+        "404":
+          description: User not found
+      summary: Get a user by id
+      x-eov-operation-handler: controllers/DefaultController
+    put:
+      operationId: usersIdPUT
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserInput"
+        required: true
+      responses:
+        "200":
+          description: User updated
+      summary: Update a user
+      x-eov-operation-handler: controllers/DefaultController
+  /rooms:
+    get:
+      operationId: roomsGET
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/Room"
+                type: array
+          description: List of rooms
+      summary: List all rooms
+      x-eov-operation-handler: controllers/DefaultController
+    post:
+      operationId: roomsPOST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoomInput"
+        required: true
+      responses:
+        "201":
+          description: Room created
+      summary: Create a new room
+      x-eov-operation-handler: controllers/DefaultController
+  /rooms/{id}:
+    delete:
+      operationId: roomsIdDELETE
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          description: Room deleted
+      summary: Delete a room
+      x-eov-operation-handler: controllers/DefaultController
+    get:
+      operationId: roomsIdGET
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Room"
+          description: Room found
+        "404":
+          description: Room not found
+      summary: Get a room by id
+      x-eov-operation-handler: controllers/DefaultController
+    put:
+      operationId: roomsIdPUT
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoomInput"
+        required: true
+      responses:
+        "200":
+          description: Room updated
+      summary: Update a room
+      x-eov-operation-handler: controllers/DefaultController
+  /tags:
+    get:
+      operationId: tagsGET
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/Tag"
+                type: array
+          description: List of tags
+      summary: List all tags
+      x-eov-operation-handler: controllers/DefaultController
+    post:
+      operationId: tagsPOST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TagInput"
+        required: true
+      responses:
+        "201":
+          description: Tag created
+      summary: Create a new tag
+      x-eov-operation-handler: controllers/DefaultController
+  /tags/{id}:
+    delete:
+      operationId: tagsIdDELETE
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          description: Tag deleted
+      summary: Delete a tag
+      x-eov-operation-handler: controllers/DefaultController
+    get:
+      operationId: tagsIdGET
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Tag"
+          description: Tag found
+        "404":
+          description: Tag not found
+      summary: Get a tag by id
+      x-eov-operation-handler: controllers/DefaultController
+    put:
+      operationId: tagsIdPUT
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TagInput"
+        required: true
+      responses:
+        "200":
+          description: Tag updated
+      summary: Update a tag
+      x-eov-operation-handler: controllers/DefaultController
+  /events:
+    get:
+      operationId: eventsGET
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/Event"
+                type: array
+          description: List of events
+      summary: List all events
+      x-eov-operation-handler: controllers/DefaultController
+    post:
+      operationId: eventsPOST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EventInput"
+        required: true
+      responses:
+        "201":
+          description: Event created
+      summary: Create a new event
+      x-eov-operation-handler: controllers/DefaultController
+  /events/{id}:
+    delete:
+      operationId: eventsIdDELETE
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          description: Event deleted
+      summary: Delete an event
+      x-eov-operation-handler: controllers/DefaultController
+    get:
+      operationId: eventsIdGET
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+          description: Event found
+        "404":
+          description: Event not found
+      summary: Get event by ID
+      x-eov-operation-handler: controllers/DefaultController
+    put:
+      operationId: eventsIdPUT
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EventInput"
+        required: true
+      responses:
+        "200":
+          description: Event updated
+      summary: Update an event
+      x-eov-operation-handler: controllers/DefaultController
+  /bookings:
+    get:
+      operationId: bookingsGET
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/Booking"
+                type: array
+          description: List of bookings
+      summary: List all bookings
+      x-eov-operation-handler: controllers/DefaultController
+    post:
+      operationId: bookingsPOST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookingInput"
+        required: true
+      responses:
+        "201":
+          description: Booking created
+      summary: Create a new booking
+      x-eov-operation-handler: controllers/DefaultController
+  /bookings/{id}:
+    delete:
+      operationId: bookingsIdDELETE
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          description: Booking deleted
+      summary: Delete a booking
+      x-eov-operation-handler: controllers/DefaultController
+    get:
+      operationId: bookingsIdGET
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+          description: Booking found
+        "404":
+          description: Booking not found
+      summary: Get a booking by id
+      x-eov-operation-handler: controllers/DefaultController
+    put:
+      operationId: bookingsIdPUT
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookingInput"
+        required: true
+      responses:
+        "200":
+          description: Booking updated
+      summary: Update a booking
+      x-eov-operation-handler: controllers/DefaultController
+components:
+  schemas:
+    User:
+      example:
+        id: 1
+        name: Ana Silva
+        email: ana.silva@umaia.pt
+        password: "12345"
+        role: student
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+      type: object
+    UserInput:
+      example:
+        password: password
+        role: role
+        name: name
+        email: email
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+      required:
+      - email
+      - name
+      - password
+      - role
+      type: object
+    Room:
+      example:
+        id: 3
+        name: A.204
+        capacity: 60
+        building: A
+        description: Laboratorio
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        capacity:
+          type: integer
+        building:
+          type: string
+        description:
+          type: string
+      type: object
+    RoomInput:
+      example:
+        name: name
+        description: description
+        building: building
+        capacity: 0
+      properties:
+        name:
+          type: string
+        capacity:
+          type: integer
+        building:
+          type: string
+        description:
+          type: string
+      required:
+      - building
+      - capacity
+      - name
+      type: object
+    Tag:
+      example:
+        id: 1
+        name: Programación
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+      type: object
+    TagInput:
+      example:
+        name: name
+      properties:
+        name:
+          type: string
+      required:
+      - name
+      type: object
+    Event:
+      example:
+        id: 1
+        title: Taller Node.js
+        description: Introducción a Node.js
+        room_id: 2
+        tag_id: 1
+        start_datetime: 2025-11-20T09:00:00
+        end_datetime: 2025-11-20T11:00:00
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        room_id:
+          type: integer
+        tag_id:
+          type: integer
+        start_datetime:
+          format: date-time
+          type: string
+        end_datetime:
+          format: date-time
+          type: string
+      type: object
+    EventInput:
+      example:
+        room_id: 0
+        start_datetime: 2000-01-23T04:56:07.000+00:00
+        end_datetime: 2000-01-23T04:56:07.000+00:00
+        description: description
+        tag_id: 6
+        title: title
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        room_id:
+          type: integer
+        tag_id:
+          type: integer
+        start_datetime:
+          format: date-time
+          type: string
+        end_datetime:
+          format: date-time
+          type: string
+      required:
+      - end_datetime
+      - room_id
+      - start_datetime
+      - tag_id
+      - title
+      type: object
+    Booking:
+      example:
+        id: 1
+        user_id: 3
+        event_id: 1
+        created_at: 2025-11-13T12:00:00
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: integer
+        event_id:
+          type: integer
+        created_at:
+          format: date-time
+          type: string
+      type: object
+    BookingInput:
+      example:
+        event_id: 6
+        user_id: 0
+      properties:
+        user_id:
+          type: integer
+        event_id:
+          type: integer
+      required:
+      - event_id
+      - user_id
+      type: object

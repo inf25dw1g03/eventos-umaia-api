@@ -1,0 +1,588 @@
+openapi: 3.0.3
+info:
+  title: Maia Campus Event API
+  description: API para gestionar usuarios, salas, eventos, reservas y etiquetas del campus MAIA.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+
+paths:
+
+  ############################################
+  # USERS
+  ############################################
+  /users:
+    get:
+      summary: List all users
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+
+    post:
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+  /users/{id}:
+    get:
+      summary: Get a user by id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+
+    put:
+      summary: Update a user
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+      responses:
+        '200':
+          description: User updated
+
+    delete:
+      summary: Delete a user
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User deleted
+
+
+  ############################################
+  # ROOMS
+  ############################################
+  /rooms:
+    get:
+      summary: List all rooms
+      responses:
+        '200':
+          description: List of rooms
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Room'
+
+    post:
+      summary: Create a new room
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoomInput'
+      responses:
+        '201':
+          description: Room created
+
+  /rooms/{id}:
+    get:
+      summary: Get a room by id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Room found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Room'
+        '404':
+          description: Room not found
+
+    put:
+      summary: Update a room
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoomInput'
+      responses:
+        '200':
+          description: Room updated
+
+    delete:
+      summary: Delete a room
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Room deleted
+
+
+  ############################################
+  # TAGS
+  ############################################
+  /tags:
+    get:
+      summary: List all tags
+      responses:
+        '200':
+          description: List of tags
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tag'
+
+    post:
+      summary: Create a new tag
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TagInput'
+      responses:
+        '201':
+          description: Tag created
+
+  /tags/{id}:
+    get:
+      summary: Get a tag by id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Tag found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+        '404':
+          description: Tag not found
+
+    put:
+      summary: Update a tag
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TagInput'
+      responses:
+        '200':
+          description: Tag updated
+
+    delete:
+      summary: Delete a tag
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Tag deleted
+
+
+  ############################################
+  # EVENTS
+  ############################################
+  /events:
+    get:
+      summary: List all events
+      responses:
+        '200':
+          description: List of events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+
+    post:
+      summary: Create a new event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventInput'
+      responses:
+        '201':
+          description: Event created
+
+  /events/{id}:
+    get:
+      summary: Get event by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Event found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '404':
+          description: Event not found
+
+    put:
+      summary: Update an event
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventInput'
+      responses:
+        '200':
+          description: Event updated
+
+    delete:
+      summary: Delete an event
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Event deleted
+
+
+  ############################################
+  # BOOKINGS
+  ############################################
+  /bookings:
+    get:
+      summary: List all bookings
+      responses:
+        '200':
+          description: List of bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+
+    post:
+      summary: Create a new booking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingInput'
+      responses:
+        '201':
+          description: Booking created
+
+  /bookings/{id}:
+    get:
+      summary: Get a booking by id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Booking found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '404':
+          description: Booking not found
+
+    put:
+      summary: Update a booking
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingInput'
+      responses:
+        '200':
+          description: Booking updated
+
+    delete:
+      summary: Delete a booking
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Booking deleted
+
+
+
+#######################################################
+# COMPONENTS & SCHEMAS
+#######################################################
+components:
+  schemas:
+
+    ####################
+    # USER
+    ####################
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+      example:
+        id: 1
+        name: Ana Silva
+        email: ana.silva@umaia.pt
+        password: "12345"
+        role: student
+
+    UserInput:
+      type: object
+      required: [name, email, password, role]
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+
+
+    ####################
+    # ROOM
+    ####################
+    Room:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        capacity:
+          type: integer
+        building:
+          type: string
+        description:
+          type: string
+      example:
+        id: 3
+        name: A.204
+        capacity: 60
+        building: A
+        description: Laboratorio
+
+    RoomInput:
+      type: object
+      required: [name, capacity, building]
+      properties:
+        name:
+          type: string
+        capacity:
+          type: integer
+        building:
+          type: string
+        description:
+          type: string
+
+
+    ####################
+    # TAG
+    ####################
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+      example:
+        id: 1
+        name: Programación
+
+    TagInput:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+
+
+    ####################
+    # EVENT
+    ####################
+    Event:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        room_id:
+          type: integer
+        tag_id:
+          type: integer
+        start_datetime:
+          type: string
+          format: date-time
+        end_datetime:
+          type: string
+          format: date-time
+      example:
+        id: 1
+        title: Taller Node.js
+        description: Introducción a Node.js
+        room_id: 2
+        tag_id: 1
+        start_datetime: 2025-11-20T09:00:00
+        end_datetime: 2025-11-20T11:00:00
+
+    EventInput:
+      type: object
+      required: [title, room_id, tag_id, start_datetime, end_datetime]
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        room_id:
+          type: integer
+        tag_id:
+          type: integer
+        start_datetime:
+          type: string
+          format: date-time
+        end_datetime:
+          type: string
+          format: date-time
+
+
+    ####################
+    # BOOKING
+    ####################
+    Booking:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: integer
+        event_id:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+      example:
+        id: 1
+        user_id: 3
+        event_id: 1
+        created_at: 2025-11-13T12:00:00
+
+    BookingInput:
+      type: object
+      required: [user_id, event_id]
+      properties:
+        user_id:
+          type: integer
+        event_id:
+          type: integer
