@@ -1,0 +1,963 @@
+openapi: 3.0.3
+
+info:
+  title: Maia Campus Event Management API
+  description: API designed to manage users, rooms, events, bookings, and tags within the Maia University Campus.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+    variables:
+      basePath:
+        default: /
+
+#######################################################
+# SCHEMAS
+#######################################################
+
+components:
+  schemas:
+
+    ################################
+    # USER
+    ################################
+    user:
+      type: object
+      description: Basic information about a registered user.
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+      required: [name, email, password, role]
+      additionalProperties: false
+        
+      example:
+          name: Ana Silva
+          email: ana.silva@umaia.pt
+          password: "12345"
+          role: student
+
+
+    ################################
+    # ROOM
+    ################################
+    room:
+      type: object
+      description: Detailed information about a campus room.
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        capacity:
+          type: integer
+        building:
+          type: string
+        description:
+          type: string
+      required: [name, capacity, building]
+      additionalProperties: false
+      example:
+        name: A.204
+        capacity: 60
+        building: A
+        description: Laboratory
+
+    ################################
+    # TAG
+    ################################
+    tag:
+      type: object
+      description: Tag used to categorize events.
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+      required: [name]
+      additionalProperties: false
+      example:
+        name: Programming
+
+
+    ################################
+    # EVENT
+    ################################
+    event:
+      type: object
+      description: Complete information about an event scheduled on campus.
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        room_id:
+          type: integer
+        tag_id:
+          type: integer
+        start_datetime:
+          type: string
+          format: date-time
+        end_datetime:
+          type: string
+          format: date-time
+      required: [title, room_id, tag_id, start_datetime, end_datetime]
+      additionalProperties: false
+      example:
+        title: Node.js Workshop
+        description: Introduction to the basics of Node.js
+        room_id: 2
+        tag_id: 1
+        start_datetime: 2025-11-20T09:00:00
+        end_datetime: 2025-11-20T11:00:00
+
+    ################################
+    # BOOKING
+    ################################
+    booking:
+      type: object
+      description: Relationship between a user and an event (booking made).
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: integer
+        event_id:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+      required: [user_id, event_id]
+      additionalProperties: false
+      example:
+        user_id: 3
+        event_id: 1
+        
+
+#######################################################
+# PATHS
+#######################################################
+
+paths:
+
+  ############################################
+  # USERS
+  ############################################
+  /users:
+    get:
+      tags:
+        - MaiaCampusEventController
+      operationId: getUsers
+      summary: Retrieve all users
+      responses:
+        '200':
+          description: List of registered users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/user'
+        '500':
+          description: Internal server error
+
+    post:
+      tags:
+        - MaiaCampusEventController
+      operationId: createUser
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user'
+      responses:
+        '201':
+          description: User successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+        '400':
+          description: Invalid data or missing fields
+        '409':
+          description: A user with this email already exists
+        '500':
+          description: Internal server error
+
+  /users/{id}:
+    get:
+      tags:
+        - MaiaCampusEventController
+      operationId: getUserById
+      summary: Retrieve a user by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error
+
+    put:
+      tags:
+        - MaiaCampusEventController
+      operationId: updateUser
+      summary: Update an existing user
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user'
+      responses:
+        '200':
+          description: User successfully updated
+        '400':
+          description: Invalid data
+        '404':
+          description: User not found
+        '409':
+          description: Email already in use
+        '500':
+          description: Internal server error
+
+    delete:
+      tags:
+        - MaiaCampusEventController
+      operationId: deleteUser
+      summary: Delete a user
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User deleted
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error
+
+  ############################################
+  # ROOMS
+  ############################################
+  /rooms:
+    get:
+      tags:
+        - MaiaCampusEventController
+      operationId: getRooms
+      summary: Retrieve all rooms
+      responses:
+        '200':
+          description: List of campus rooms
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/room'
+        '500':
+          description: Internal server error
+
+    post:
+      tags:
+        - MaiaCampusEventController
+      operationId: createRoom
+      summary: Create a new room
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/room'
+      responses:
+        '201':
+          description: Room successfully created
+        '400':
+          description: Invalid data
+        '409':
+          description: A room with this name already exists
+        '500':
+          description: Internal server error
+
+  /rooms/{id}:
+    get:
+      tags:
+        - MaiaCampusEventController
+      operationId: getRoomById
+      summary: Retrieve a room by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Room found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/room'
+        '404':
+          description: Room not found
+        '500':
+          description: Internal server error
+
+    put:
+      tags:
+        - MaiaCampusEventController
+      operationId: updateRoom
+      summary: Update room information
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/room'
+      responses:
+        '200':
+          description: Room updated successfully
+        '400':
+          description: Invalid data
+        '404':
+          description: Room not found
+        '409':
+          description: Room name already exists
+        '500':
+          description: Internal server error
+
+    delete:
+      tags:
+        - MaiaCampusEventController
+      operationId: deleteRoom
+      summary: Delete a room
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Room deleted
+        '404':
+          description: Room not found
+        '409':
+          description: Room has associated events
+        '500':
+          description: Internal server error
+
+
+
+
+  ############################################
+  # TAGS
+  ############################################
+  /tags:
+    get:
+      tags:
+        - MaiaCampusEventController
+      operationId: getTags
+      summary: Retrieve all tags
+      responses:
+        '200':
+          description: List of available tags
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/tag'
+        '500':
+          description: Internal server error
+
+    post:
+      tags:
+        - MaiaCampusEventController
+      operationId: createTag
+      summary: Create a new tag
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/tag'
+      responses:
+        '201':
+          description: Tag successfully created
+        '400':
+          description: Invalid data
+        '409':
+          description: A tag with this name already exists
+        '500':
+          description: Internal server error
+
+  /tags/{id}:
+    get:
+      tags:
+        - MaiaCampusEventController
+      operationId: getTagById
+      summary: Retrieve a tag by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Tag found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tag'
+        '404':
+          description: Tag not found
+        '500':
+          description: Internal server error
+
+    put:
+      tags:
+        - MaiaCampusEventController
+      operationId: updateTag
+      summary: Update an existing tag
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/tag'
+      responses:
+        '200':
+          description: Tag successfully updated
+        '400':
+          description: Invalid data
+        '404':
+          description: Tag not found
+        '409':
+          description: A tag with this name already exists
+        '500':
+          description: Internal server error
+
+    delete:
+      tags:
+        - MaiaCampusEventController
+      operationId: deleteTag
+      summary: Delete a tag
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Tag deleted
+        '404':
+          description: Tag not found
+        '409':
+          description: Tag is associated with events
+        '500':
+          description: Internal server error
+
+
+  ############################################
+  # EVENTS
+  ############################################
+  /events:
+    get:
+      tags:
+        - MaiaCampusEventController
+      operationId: getEvents
+      summary: Retrieve all events
+      responses:
+        '200':
+          description: List of registered events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/event'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/event'
+                xml:
+                  name: Event
+        '500':
+          description: Internal server error
+
+    post:
+      tags:
+        - MaiaCampusEventController
+      operationId: createEvent
+      summary: Create a new event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/event'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/event'
+      responses:
+        '201':
+          description: Event successfully created
+        '400':
+          description: Invalid data (dates, room, or tag)
+        '404':
+          description: Room or tag not found
+        '409':
+          description: The room is occupied during this time period
+        '500':
+          description: Internal server error
+
+  /events/{id}:
+    get:
+      tags:
+        - MaiaCampusEventController
+      operationId: getEventById
+      summary: Retrieve an event by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Event found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/event'
+        '404':
+          description: Event not found
+        '500':
+          description: Internal server error
+
+    put:
+      tags:
+        - MaiaCampusEventController
+      operationId: updateEvent
+      summary: Update an existing event
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/event'
+      responses:
+        '200':
+          description: Event successfully updated
+        '400':
+          description: Invalid data
+        '404':
+          description: Event not found
+        '409':
+          description: The room is occupied during the updated time
+        '500':
+          description: Internal server error
+
+    delete:
+      tags:
+        - MaiaCampusEventController
+      operationId: deleteEvent
+      summary: Delete an event
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Event deleted
+        '404':
+          description: Event not found
+        '409':
+          description: The event has associated bookings
+        '500':
+          description: Internal server error
+
+
+
+
+    ############################################
+  # BOOKINGS
+  ############################################
+  /bookings:
+    get:
+      tags:
+        - MaiaCampusEventController
+      operationId: getBookings
+      summary: Retrieve all bookings
+      responses:
+        '200':
+          description: List of all user bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/booking'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/booking'
+                xml:
+                  name: Booking
+        '500':
+          description: Internal server error
+
+    post:
+      tags:
+        - MaiaCampusEventController
+      operationId: createBooking
+      summary: Create a new booking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/booking'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/booking'
+      responses:
+        '201':
+          description: Booking successfully created
+        '400':
+          description: Invalid data or missing fields
+        '404':
+          description: User or event not found
+        '409':
+          description: User already has a booking for this event
+        '500':
+          description: Internal server error
+
+  /bookings/{id}:
+    get:
+      tags:
+        - MaiaCampusEventController
+      operationId: getBookingById
+      summary: Retrieve a booking by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Booking found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/booking'
+        '404':
+          description: Booking not found
+        '500':
+          description: Internal server error
+
+    put:
+      tags:
+        - MaiaCampusEventController
+      operationId: updateBooking
+      summary: Update an existing booking
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/booking'
+      responses:
+        '200':
+          description: Booking successfully updated
+        '400':
+          description: Invalid data
+        '404':
+          description: Booking not found
+        '409':
+          description: User already has a booking for this event
+        '500':
+          description: Internal server error
+
+    delete:
+      tags:
+        - MaiaCampusEventController
+      operationId: deleteBooking
+      summary: Delete a booking
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Booking deleted
+        '404':
+          description: Booking not found
+        '500':
+          description: Internal server error
+
+  ############################################
+  # CUSTOM ENDPOINTS (ADVANCED METHODS)
+  ############################################
+
+  /rooms/{id}/events:
+    get:
+      tags:
+        - MaiaCampusEventController
+      operationId: getEventsByRoom
+      summary: Retrieve all events scheduled in a particular room
+      description: Returns all events assigned to a specific room.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of events assigned to this room
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/event'
+        '404':
+          description: Room not found
+        '500':
+          description: Internal server error
+
+  /tags/{id}/events:
+    get:
+      tags:
+        - MaiaCampusEventController
+      operationId: getEventsByTag
+      summary: Retrieve all events associated with a specific tag
+      description: Returns all events categorized with the given tag.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of events with this tag
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/event'
+        '404':
+          description: Tag not found
+        '500':
+          description: Internal server error
+
+  /rooms/occupied:
+    get:
+      tags:
+        - MaiaCampusEventController
+      operationId: getOccupiedRooms
+      summary: Retrieve rooms that are occupied on a specific date
+      parameters:
+        - in: query
+          name: date
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: List of rooms occupied on the specified date
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/room'
+        '400':
+          description: Missing or invalid date parameter
+        '500':
+          description: Internal server error
+
+  /events/{id}/users:
+    get:
+      tags:
+        - MaiaCampusEventController
+      operationId: getUsersByEvent
+      summary: Retrieve all users registered for an event
+      description: Returns the list of users who have a booking for this event.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of users attending the event
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/user'
+        '404':
+          description: Event not found
+        '500':
+          description: Internal server error
+
+  /rooms/available:
+    get:
+      tags:
+        - MaiaCampusEventController
+      operationId: getAvailableRooms
+      summary: Retrieve available rooms within a time interval
+      description: Returns only rooms that have no scheduled events during the selected time range.
+      parameters:
+        - in: query
+          name: from
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: to
+          required: true
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: List of available rooms
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/room'
+        '400':
+          description: Missing or invalid parameters
+        '500':
+          description: Internal server error
+
+  /events/search:
+    get:
+      tags:
+        - MaiaCampusEventController
+      operationId: searchEvents
+      summary: Search events by keywords
+      description: Returns events whose title or description match the search query.
+      parameters:
+        - in: query
+          name: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Matching events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/event'
+        '400':
+          description: Missing query parameter
+        '500':
+          description: Internal server error
+
+  /events/by-date:
+    get:
+      tags:
+        - MaiaCampusEventController
+      operationId: getEventsByDate
+      summary: Retrieve events filtered by date
+      description: Returns all events occurring on a specific date.
+      parameters:
+        - in: query
+          name: date
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Events occurring on the specified date
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/event'
+        '400':
+          description: Missing or invalid date parameter
+        '500':
+          description: Internal server error

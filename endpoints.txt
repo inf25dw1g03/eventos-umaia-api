@@ -1,0 +1,71 @@
+---
+SI
+2) Obtener todos los eventos de una sala
+GET /rooms/{id}/events
+
+Utilidad: ver qué ocurre en una sala
+Dificultad: baja
+SQL: SELECT * FROM events WHERE room_id = ?
+
+---
+SI
+3) Obtener todos los eventos de un tag
+GET /tags/{id}/events
+
+Utilidad: ver todos los eventos de una categoría/tag
+Dificultad: fácil
+SQL: SELECT * FROM events WHERE tag_id = ?
+
+---
+SI
+4) Ver las salas ocupadas en un día concreto
+GET /rooms/occupied?date=2025-11-20
+
+Utilidad: comprobar disponibilidad
+Dificultad: media-baja
+SQL:
+
+SELECT DISTINCT room_id FROM events
+WHERE DATE(start_datetime) = ?
+
+--
+-PUEDE--
+Ver qué reservas existen para un evento
+GET /events/{id}/bookings
+
+Utilidad: monitorizar inscripciones
+Dificultad: baja
+SQL: SELECT * FROM bookings WHERE event_id = ?
+--
+-SI-
+Ver todas las personas para un evento
+
+Select * FROM personas where event_id = ?
+
+--
+-SI-
+2) Buscar salas libres en un horario
+
+➡️ Muy usado en universidades.
+
+GET /rooms/available?from=2025-11-20T09:00&to=2025-11-20T11:00
+
+¿Qué hace?
+Devuelve salas que NO tienen ningún evento en ese rango.
+
+SQL (muy simple):
+
+--
+-SI-
+8) Buscar eventos por texto (title, description)
+GET /events/search?query=node
+
+Busca coincidencias usando LIKE.
+
+--
+
+
+🟦 ENDPOINTS ULTRA-FÁCILES PERO MUY VALORADOS
+⭐ Filtrar eventos por fecha
+
+GET /events?date=2025-11-20
