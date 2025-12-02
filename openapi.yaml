@@ -107,10 +107,9 @@ components:
           type: integer
         start_datetime:
           type: string
-          format: date-time
         end_datetime:
           type: string
-          format: date-time
+
       required: [title, room_id, tag_id, start_datetime, end_datetime]
       additionalProperties: false
       example:
@@ -787,6 +786,19 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/event'
+                example: id = 4 
+                      [
+                        {
+                         "id": 5,
+                         "title": "Taller Romantico",
+                         "description": "Paper flowers creation",
+                         "room_id": 4,
+                         "tag_id": 6,
+                         "start_datetime": "2026-02-14T09:00:00.000Z",
+                         "end_datetime": "2026-02-16T09:00:00.000Z"
+                        }
+                     ]
+                            
         '404':
           description: Room not found
         '500':
@@ -814,6 +826,18 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/event'
+                example: id = 3
+                  [
+                    {
+                      "id": 1,
+                      "title": "Salud Workshop",
+                      "description": "Introduction to the basics of Curso de salud",
+                      "room_id": 2,
+                      "tag_id": 3,
+                      "start_datetime": "2025-11-20T09:00:00.000Z",
+                      "end_datetime": "2025-11-20T11:00:00.000Z"
+                    }
+                  ]
         '404':
           description: Tag not found
         '500':
@@ -831,7 +855,7 @@ paths:
           required: true
           schema:
             type: string
-            format: date
+            
       responses:
         '200':
           description: List of rooms occupied on the specified date
@@ -841,6 +865,15 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/room'
+                example: date = 2026-02-14
+                    {
+                      "id": 4,
+                      "name": "D.13",
+                      "capacity": 32,
+                      "building": "D",
+                      "description": "Lab"
+                    }
+
         '400':
           description: Missing or invalid date parameter
         '500':
@@ -868,6 +901,16 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/user'
+                example: id = 2
+                  [
+                    {
+                      "id": 3,
+                      "name": "Marcos Escribano",
+                      "email": "mescribat@umaia.pt",
+                      "password": "Hornachos3VecesParaiso",
+                      "role": "student"
+                    }
+                  ]
         '404':
           description: Event not found
         '500':
@@ -886,13 +929,13 @@ paths:
           required: true
           schema:
             type: string
-            format: date-time
+            
         - in: query
           name: to
           required: true
           schema:
             type: string
-            format: date-time
+            
       responses:
         '200':
           description: List of available rooms
@@ -902,6 +945,15 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/room'
+                example: from 2026-02-14
+                         to 2026-02-16
+                      {
+                        "id": 3,
+                        "name": "B.12",
+                        "capacity": 10,
+                        "building": "B",
+                        "description": "Lab"
+                      }
         '400':
           description: Missing or invalid parameters
         '500':
@@ -929,6 +981,19 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/event'
+                example: query = Node
+                    [
+                      {
+                        "id": 2,
+                        "title": "Node.js Workshop",
+                        "description": "Introduction to the basics of Node.js",
+                        "room_id": 2,
+                        "tag_id": 4,
+                        "start_datetime": "2025-11-27T10:00:00.000Z",
+                        "end_datetime": "2025-11-29T11:00:00.000Z"
+                      }
+                    ]
+
         '400':
           description: Missing query parameter
         '500':
@@ -947,7 +1012,7 @@ paths:
           required: true
           schema:
             type: string
-            format: date
+            
       responses:
         '200':
           description: Events occurring on the specified date
@@ -957,6 +1022,17 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/event'
+                example: date 2026-02-14
+                    {
+                      "id": 3,
+                      "title": "Football Introduction",
+                      "description": "Introduction to the football basics concepts",
+                      "room_id": 5,
+                      "tag_id": 5,
+                      "start_datetime": "2026-02-14T09:00:00.000Z",
+                      "end_datetime": "2026-02-17T09:00:00.000Z"
+                    }
+
         '400':
           description: Missing or invalid date parameter
         '500':
