@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+
+  mysql:
+    image: angelumaia/mysql:latest
+    container_name: mysql_maiacampus
+    restart: always
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: maia_campus_event
+
+  api:
+    image: angelumaia/api:latest
+    container_name: api_maiacampus
+    restart: always
+    ports:
+      - "8090:8090"
+    depends_on:
+      - mysql
+    environment:
+      DB_HOST: mysql
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: maia_campus_event
+
